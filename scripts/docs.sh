@@ -94,7 +94,7 @@ Perintah:
   list [kata]                  Daftar halaman; opsional filter pencarian
   add <path> [judul]           Buat halaman dari template lalu buka editor
   edit <path>                  Edit halaman
-  delete <path>                Hapus halaman, nav, dan konfigurasi secure
+  delete <path>                Hapus halaman beserta semua referensinya
   nav                          Edit navigasi di mkdocs.yml
   protect <path> <group>       Lindungi halaman dengan password/group
   unprotect <path>             Jadikan halaman publik
@@ -213,32 +213,90 @@ if len(filtered) != len(lines):
 PY
 }
 
+remove_markdown_links() {
+    local relative="$1"
+    "$(python_bin)" - "$DOCS_DIR" "$relative" <<'PY'
+import re
+import sys
+from pathlib import Path
+from urllib.parse import unquote
+
+docs_dir = Path(sys.argv[1]).resolve()
+relative = Path(sys.argv[2])
+target = (docs_dir / relative).resolve()
+link_pattern = re.compile(r"(?<!!)\[[^\]]*\]\(([^)]+)\)")
+
+for source in sorted(docs_dir.rglob("*.md")):
+    if source.resolve() == target or "overrides" in source.parts:
+        continue
+
+    original_lines = source.read_text(encoding="utf-8").splitlines(keepends=True)
+    filtered_lines = []
+    removed = 0
+
+    for line in original_lines:
+        targets_page = False
+        for match in link_pattern.finditer(line):
+            destination = match.group(1).strip()
+            if destination.startswith("<") and ">" in destination:
+                destination = destination[1 : destination.index(">")]
+            else:
+                destination = destination.split(maxsplit=1)[0]
+
+            destination = unquote(destination.split("#", 1)[0].split("?", 1)[0])
+            if not destination or "://" in destination or destination.startswith(("mailto:", "/")):
+                continue
+
+            linked_file = (source.parent / destination).resolve()
+            if linked_file == target:
+                targets_page = True
+                break
+
+        if targets_page:
+            removed += 1
+        else:
+            filtered_lines.append(line)
+
+    if removed:
+        source.write_text("".join(filtered_lines), encoding="utf-8")
+        display = source.relative_to(docs_dir)
+        print(f"Tautan dibersihkan: docs/{display} ({removed} baris)")
+PY
+}
+
 delete_doc() {
     [[ -n "${1:-}" ]] || die "Path wajib diisi."
     local relative target page_url
     relative="$(normalize_doc_path "$1")"
     target="$DOCS_DIR/$relative"
-    [[ -f "$target" ]] || die "Dokumen tidak ditemukan: docs/$relative"
 
-    info "Dokumen yang akan dihapus: docs/$relative"
-    confirm "Lanjutkan penghapusan?" || die "Dibatalkan."
+    if [[ -f "$target" ]]; then
+        info "Dokumen yang akan dihapus: docs/$relative"
+    else
+        info "File sudah tidak ada; referensi akan tetap dibersihkan: docs/$relative"
+    fi
+    confirm "Hapus halaman dan seluruh referensinya?" || die "Dibatalkan."
 
     page_url="$(page_url_from_doc "$relative")"
     remove_secure_entry "$page_url"
     remove_nav_entry "$relative"
+    remove_markdown_links "$relative"
 
-    if git rev-parse --is-inside-work-tree >/dev/null 2>&1 &&
+    if [[ -f "$target" ]] &&
+        git rev-parse --is-inside-work-tree >/dev/null 2>&1 &&
         git ls-files --error-unmatch "docs/$relative" >/dev/null 2>&1; then
         git rm -- "docs/$relative"
         info "File dihapus melalui Git. Sebelum commit dapat dipulihkan dengan:"
         info "  git restore --staged docs/$relative"
         info "  git restore docs/$relative"
-    else
+    elif [[ -f "$target" ]]; then
         rm -- "$target"
         info "File lokal yang belum dilacak Git telah dihapus."
+    else
+        info "Tidak ada file yang perlu dihapus; pembersihan referensi selesai."
     fi
 
-    info "Jalankan './scripts/docs.sh check' sebelum publish."
+    info "Berikutnya jalankan: ./scripts/docs.sh publish \"docs: remove $relative\""
 }
 
 protect_doc() {

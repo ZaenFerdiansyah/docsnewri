@@ -42,13 +42,6 @@ Use the navigation or search field to find a topic. A 🔒 marker identifies doc
 
 </div>
 
-## Quick links
-
-- [MikroTik](network/mikrotik.md)
-- [BGP](network/bgp.md)
-- [WireGuard](network/wireguard.md)
-- [VMware ESXi 🔒](server/esxi.md)
-
 ## Search
 
 Use the search field in the header to search public page titles, headings, commands, and documentation content. Protected page titles remain discoverable, but protected body content is excluded from public search data.

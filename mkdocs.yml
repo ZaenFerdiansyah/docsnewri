@@ -68,15 +68,10 @@ nav:
   - Home: index.md
   - Network:
       - Overview: network/index.md
-      - MikroTik: network/mikrotik.md
-      - VyOS 🔒: network/vyos.md
-      - BGP: network/bgp.md
-      - WireGuard: network/wireguard.md
-      - SR-IOV dan TRex Jakarta-Denpasar: network/sriov-trex-jakarta-denpasar.md
+      - SR-IOV dan TRex Jakarta-Denpasar 🔒: network/sriov-trex-jakarta-denpasar.md
   - DNS: dns/index.md
   - Server:
       - Overview: server/index.md
-      - VMware ESXi 🔒: server/esxi.md
   - Monitoring: monitoring/index.md
   - Maintainers:
       - Documentation workflow 🔒: maintainers/documentation-workflow.md

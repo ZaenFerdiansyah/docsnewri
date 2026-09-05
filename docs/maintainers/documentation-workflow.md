@@ -257,9 +257,21 @@ Hapus halaman:
 ./scripts/docs.sh delete network/ospf
 ```
 
-Penghapusan membutuhkan konfirmasi. Script juga menghapus referensi satu baris
-halaman tersebut dari navigasi dan konfigurasi secure jika ada. Tinjau
-`mkdocs.yml` setelah menghapus halaman kategori atau struktur navigasi kompleks.
+Penghapusan membutuhkan konfirmasi. Script juga membersihkan item navigasi,
+konfigurasi secure, dan tautan Markdown yang menuju halaman tersebut. Perintah
+yang sama dapat dijalankan ulang jika file sudah telanjur dihapus tetapi masih
+ada referensi yang tertinggal.
+
+Setelah menghapus beberapa halaman, cukup jalankan publish:
+
+```bash
+./scripts/docs.sh delete network/mikrotik
+./scripts/docs.sh delete network/bgp
+./scripts/docs.sh publish "docs: remove unused network pages"
+```
+
+Tinjau daftar perubahan yang ditampilkan sebelum mengetik `PUBLISH`. Script
+akan menjalankan validator, unit test, dan strict build sebelum commit dan push.
 
 ## Menyiapkan lingkungan lokal
 
