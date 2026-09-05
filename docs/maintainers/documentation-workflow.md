@@ -110,7 +110,7 @@ Perintah yang tersedia:
 
 ```text
 list                         daftar seluruh dokumen
-add <path> [judul]           buat dokumen dari template
+add <path> [judul]           buat dokumen dan langsung minta password
 edit <path>                  edit dokumen
 delete <path>                hapus dokumen dengan konfirmasi
 nav                          edit navigasi
@@ -135,7 +135,8 @@ Contoh alur paling umum:
 
 Perintah `publish` menampilkan seluruh perubahan dan hanya melanjutkan setelah
 Anda mengetik `PUBLISH`. Semua perubahan yang ditampilkan akan masuk ke commit,
-jadi selalu baca hasil `git status` dengan teliti.
+jadi selalu baca hasil `git status` dengan teliti. Publish akan ditolak apabila
+ada file Markdown baru yang belum terdaftar sebagai secure page.
 
 ## Menambah halaman baru
 
@@ -164,9 +165,23 @@ Cara singkat menggunakan script:
 ./scripts/docs.sh nav
 ```
 
+Setelah editor ditutup, perintah `add` otomatis:
+
+1. membuat group unik dari path halaman;
+2. meminta password dan konfirmasinya;
+3. menyimpan hanya hash password ke `config/secure-pages.json`;
+4. menjalankan validator secure-page.
+
+Contoh `network/ospf.md` otomatis menggunakan group `network-ospf`. Proses
+akan meminta password sebelum halaman dapat dipublish. Tambahkan simbol `🔒`
+pada label navigasinya.
+
 ## Membuat halaman publik
 
-Secara default, halaman baru bersifat publik selama jalurnya tidak terdaftar di `config/secure-pages.json`. Halaman publik akan terbuka langsung dan isi halamannya dapat masuk ke hasil pencarian.
+Halaman lama yang tidak terdaftar di `config/secure-pages.json` tetap bersifat
+publik. Namun, kebijakan script maintainer sekarang mewajibkan setiap file
+Markdown baru menjadi secure page sebelum dapat dipublish. Halaman publik akan
+terbuka langsung dan isi halamannya dapat masuk ke hasil pencarian.
 
 ## Membuat halaman terlindungi
 

@@ -92,7 +92,7 @@ Pemakaian:
 Perintah:
   help                         Tampilkan bantuan
   list [kata]                  Daftar halaman; opsional filter pencarian
-  add <path> [judul]           Buat halaman dari template lalu buka editor
+  add <path> [judul]           Buat halaman dan langsung lindungi password
   edit <path>                  Edit halaman
   delete <path>                Hapus halaman beserta semua referensinya
   nav                          Edit navigasi di mkdocs.yml
@@ -136,7 +136,7 @@ list_docs() {
 
 add_doc() {
     [[ -n "${1:-}" ]] || die "Path wajib diisi."
-    local relative title target
+    local relative title target group
     relative="$(normalize_doc_path "$1")"
     title="${2:-}"
     target="$DOCS_DIR/$relative"
@@ -162,8 +162,15 @@ add_doc() {
     } >"$target"
 
     info "Dibuat: docs/$relative"
-    info "Setelah selesai, tambahkan ke navigasi dengan: ./scripts/docs.sh nav"
     open_editor "$target"
+
+    group="${relative%.md}"
+    group="${group//\//-}"
+    info
+    info "Setiap dokumentasi baru wajib dilindungi sebelum dapat dipublish."
+    protect_doc "${relative%.md}" "$group"
+    info "Setelah selesai, tambahkan ke navigasi beserta simbol 🔒:"
+    info "  ./scripts/docs.sh nav"
 }
 
 edit_doc() {
@@ -434,6 +441,68 @@ git_status() {
     git diff --stat
 }
 
+validate_new_docs_are_secure() {
+    "$(python_bin)" - "$PROJECT_ROOT" "$SECURE_CONFIG" <<'PY'
+import json
+import subprocess
+import sys
+from pathlib import Path
+
+project_root = Path(sys.argv[1])
+config_path = Path(sys.argv[2])
+config = json.loads(config_path.read_text(encoding="utf-8"))
+secure_paths = {
+    page.get("path")
+    for page in config.get("secure_pages", [])
+    if isinstance(page, dict)
+}
+
+result = subprocess.run(
+    ["git", "status", "--porcelain", "-z", "--untracked-files=all"],
+    cwd=project_root,
+    check=True,
+    capture_output=True,
+)
+entries = result.stdout.decode("utf-8", errors="replace").split("\0")
+unprotected = []
+
+for entry in entries:
+    if not entry:
+        continue
+    status = entry[:2]
+    path = entry[3:]
+    if status not in {"??", "A ", "AM"}:
+        continue
+    if not path.startswith("docs/") or not path.endswith(".md"):
+        continue
+    if path.startswith(("docs/assets/", "docs/overrides/")):
+        continue
+
+    relative = path.removeprefix("docs/").removesuffix(".md")
+    if relative == "index":
+        page_url = "/"
+    elif relative.endswith("/index"):
+        page_url = f"/{relative.removesuffix('/index')}/"
+    else:
+        page_url = f"/{relative}/"
+
+    if page_url not in secure_paths:
+        unprotected.append((path, page_url))
+
+if unprotected:
+    print("Publish dibatalkan: dokumentasi baru belum dilindungi:", file=sys.stderr)
+    for path, page_url in unprotected:
+        print(f"  - {path} (path secure: {page_url})", file=sys.stderr)
+    print(
+        "Jalankan './scripts/docs.sh protect <path> <group>' terlebih dahulu.",
+        file=sys.stderr,
+    )
+    raise SystemExit(1)
+
+print("Semua dokumentasi baru memiliki konfigurasi secure.")
+PY
+}
+
 run_check() {
     local python
     python="$(python_bin)"
@@ -454,6 +523,7 @@ publish_changes() {
     [[ -n "$branch" ]] || die "Tidak dapat publish dari detached HEAD."
     git remote get-url origin >/dev/null 2>&1 || die "Remote origin tidak tersedia."
 
+    validate_new_docs_are_secure
     run_check
     info
     info "Perubahan yang akan dipublish:"
