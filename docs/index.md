@@ -2,7 +2,7 @@
 
 Operational notes, configuration examples, and troubleshooting guidance for infrastructure maintainers.
 
-Use the navigation or search field to find a topic. A 🔒 marker identifies documentation protected by the client-side access gate.
+Use the navigation or search field to find a topic. A 🔒 marker identifies documentation protected.
 
 ## Browse documentation
 
@@ -41,11 +41,3 @@ Use the navigation or search field to find a topic. A 🔒 marker identifies doc
     [Browse Monitoring →](monitoring/index.md)
 
 </div>
-
-## Search
-
-Use the search field in the header to search public page titles, headings, commands, and documentation content. Protected page titles remain discoverable, but protected body content is excluded from public search data.
-
-## Maintainers
-
-See the [documentation workflow](maintainers/documentation-workflow.md) before adding or protecting a page. Review the [security boundaries](maintainers/security.md) before publishing operational information.
