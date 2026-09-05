@@ -1,4 +1,4 @@
-# Infrastructure Documentation
+# Zensnewri Documentation
 
 Static technical documentation built with MkDocs Material and published through GitHub Pages.
 

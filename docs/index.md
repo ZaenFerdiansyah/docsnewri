@@ -1,4 +1,4 @@
-# Infrastructure Documentation
+# Zensnewri Documentation
 
 Operational notes, configuration examples, and troubleshooting guidance for infrastructure maintainers.
 

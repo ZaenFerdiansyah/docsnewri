@@ -824,7 +824,7 @@ Homepage harus berisi:
 Example:
 
 ```text
-Infrastructure Documentation
+Zensnewri Documentation
 
 Search documentation...
 
