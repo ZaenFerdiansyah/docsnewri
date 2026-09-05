@@ -72,6 +72,7 @@ nav:
       - VyOS 🔒: network/vyos.md
       - BGP: network/bgp.md
       - WireGuard: network/wireguard.md
+      - SR-IOV dan TRex Jakarta-Denpasar: network/sriov-trex-jakarta-denpasar.md
   - DNS: dns/index.md
   - Server:
       - Overview: server/index.md
