@@ -13,12 +13,12 @@
     {
       "path": "/maintainers/documentation-workflow/",
       "group": "maintainers",
-      "password_hash": "c62eb5eb42791518a75e2213c61c1fec5caaa83db5ad0cd7875e58f08adcb99e"
+      "password_hash": "a39628715e6ed45e683ff6e2ed5d66f4f56505900093e0b2406e639ba709236a"
     },
     {
       "path": "/maintainers/security/",
       "group": "maintainers",
-      "password_hash": "c62eb5eb42791518a75e2213c61c1fec5caaa83db5ad0cd7875e58f08adcb99e"
+      "password_hash": "a39628715e6ed45e683ff6e2ed5d66f4f56505900093e0b2406e639ba709236a"
     }
   ]
 }
