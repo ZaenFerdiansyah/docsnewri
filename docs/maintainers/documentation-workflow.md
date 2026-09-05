@@ -98,6 +98,44 @@ Simpan gambar di bawah `docs/assets/images/`, lalu gunakan jalur relatif dari do
 
 Gunakan nama file deskriptif, ukuran yang wajar, dan teks alternatif yang menjelaskan isi gambar.
 
+## Menggunakan script pengelola
+
+Untuk pekerjaan harian, gunakan script berikut dari root proyek:
+
+```bash
+./scripts/docs.sh help
+```
+
+Perintah yang tersedia:
+
+```text
+list                         daftar seluruh dokumen
+add <path> [judul]           buat dokumen dari template
+edit <path>                  edit dokumen
+delete <path>                hapus dokumen dengan konfirmasi
+nav                          edit navigasi
+protect <path> <group>       lindungi dokumen
+unprotect <path>             jadikan dokumen publik
+hash                         buat hash password
+status                       lihat perubahan Git
+check                        validasi, unit test, dan strict build
+serve                        jalankan preview lokal
+publish [pesan commit]       check, commit, dan push
+```
+
+Contoh alur paling umum:
+
+```bash
+./scripts/docs.sh add network/ospf "Konfigurasi OSPF"
+./scripts/docs.sh nav
+./scripts/docs.sh serve
+./scripts/docs.sh publish "docs: add OSPF guide"
+```
+
+Perintah `publish` menampilkan seluruh perubahan dan hanya melanjutkan setelah
+Anda mengetik `PUBLISH`. Semua perubahan yang ditampilkan akan masuk ke commit,
+jadi selalu baca hasil `git status` dengan teliti.
+
 ## Menambah halaman baru
 
 Contoh berikut menambahkan halaman OSPF ke kategori Network.
@@ -117,6 +155,13 @@ Contoh berikut menambahkan halaman OSPF ke kategori Network.
 4. Jalankan pratinjau lokal dan periksa navigasinya.
 
 Indentasi YAML harus menggunakan spasi, bukan tab. Halaman yang tidak dimasukkan ke `nav` dapat memicu peringatan pada build ketat.
+
+Cara singkat menggunakan script:
+
+```bash
+./scripts/docs.sh add network/ospf "Konfigurasi OSPF"
+./scripts/docs.sh nav
+```
 
 ## Membuat halaman publik
 
@@ -192,6 +237,30 @@ Pengguna yang sudah membuka grup dalam sesi aktif mungkin perlu membuka tab atau
 3. Jalankan validator dan build ketat.
 4. Periksa indeks pencarian karena isi halaman sekarang akan bersifat publik.
 
+Cara singkat:
+
+```bash
+./scripts/docs.sh unprotect network/ospf
+```
+
+## Mengedit dan menghapus halaman
+
+Edit halaman:
+
+```bash
+./scripts/docs.sh edit network/ospf
+```
+
+Hapus halaman:
+
+```bash
+./scripts/docs.sh delete network/ospf
+```
+
+Penghapusan membutuhkan konfirmasi. Script juga menghapus referensi satu baris
+halaman tersebut dari navigasi dan konfigurasi secure jika ada. Tinjau
+`mkdocs.yml` setelah menghapus halaman kategori atau struktur navigasi kompleks.
+
 ## Menyiapkan lingkungan lokal
 
 Direkomendasikan menggunakan virtual environment agar paket proyek tidak bercampur dengan Python sistem.
@@ -236,6 +305,12 @@ python3 -m unittest discover -s tests -v
 mkdocs build --strict
 ```
 
+Atau gunakan satu perintah:
+
+```bash
+./scripts/docs.sh check
+```
+
 Build ketat harus selesai tanpa error. Folder `site/` adalah hasil build lokal dan tidak perlu di-commit.
 
 Periksa perubahan sebelum membuat commit:
@@ -246,6 +321,18 @@ git diff
 ```
 
 ## Push langsung ke GitHub
+
+Cara otomatis yang direkomendasikan:
+
+```bash
+./scripts/docs.sh publish "docs: jelaskan perubahan"
+```
+
+Script menjalankan seluruh pemeriksaan, menampilkan file yang berubah, meminta
+konfirmasi eksplisit, membuat commit, lalu melakukan push ke branch aktif.
+Deployment produksi hanya dipicu jika branch tersebut adalah `main`.
+
+Untuk menjalankan Git secara manual, ikuti langkah berikut.
 
 Sinkronkan branch lokal terlebih dahulu:
 
