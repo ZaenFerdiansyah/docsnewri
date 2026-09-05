@@ -98,6 +98,7 @@ Perintah:
   nav                          Edit navigasi di mkdocs.yml
   protect <path> <group>       Lindungi halaman dengan password/group
   unprotect <path>             Jadikan halaman publik
+  reset-password <group>       Reset password seluruh halaman dalam group
   hash                         Buat hash password tanpa menyimpan plaintext
   status                       Tampilkan status dan ringkasan perubahan Git
   check                        Validator, unit test, dan strict build
@@ -109,6 +110,7 @@ Contoh:
   ./scripts/docs.sh add network/ospf "Konfigurasi OSPF"
   ./scripts/docs.sh edit network/ospf
   ./scripts/docs.sh protect network/ospf network-internal
+  ./scripts/docs.sh reset-password network-internal
   ./scripts/docs.sh unprotect network/ospf
   ./scripts/docs.sh delete network/ospf
   ./scripts/docs.sh check
@@ -375,6 +377,57 @@ unprotect_doc() {
     "$(python_bin)" scripts/validate-secure-pages.py
 }
 
+reset_group_password() {
+    [[ -n "${1:-}" ]] ||
+        die "Gunakan: ./scripts/docs.sh reset-password <group>"
+    local group="$1"
+    [[ "$group" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]] ||
+        die "Group hanya boleh berisi huruf kecil, angka, dan tanda hubung."
+
+    "$(python_bin)" - "$SECURE_CONFIG" "$group" <<'PY'
+import getpass
+import hashlib
+import json
+import sys
+from pathlib import Path
+
+config_path = Path(sys.argv[1])
+group = sys.argv[2]
+data = json.loads(config_path.read_text(encoding="utf-8"))
+pages = data.get("secure_pages", [])
+group_pages = [page for page in pages if page.get("group") == group]
+
+if not group_pages:
+    raise SystemExit(f"Error: group tidak ditemukan: {group}")
+
+print(f"Group: {group}")
+print("Halaman yang akan menggunakan password baru:")
+for page in group_pages:
+    print(f"  - {page['path']}")
+
+password = getpass.getpass("Password baru: ")
+confirmation = getpass.getpass("Konfirmasi password baru: ")
+if not password:
+    raise SystemExit("Error: password tidak boleh kosong.")
+if password != confirmation:
+    raise SystemExit("Error: konfirmasi password tidak sama.")
+
+password_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
+for page in group_pages:
+    page["password_hash"] = password_hash
+
+config_path.write_text(
+    json.dumps(data, indent=2, ensure_ascii=False) + "\n",
+    encoding="utf-8",
+)
+print(f"Password berhasil di-reset untuk {len(group_pages)} halaman.")
+print("Plaintext password tidak disimpan.")
+PY
+
+    "$(python_bin)" scripts/validate-secure-pages.py
+    info "Reset selesai. Jalankan './scripts/docs.sh publish \"security: reset password group $group\"'"
+}
+
 git_status() {
     require_git
     git status --short
@@ -444,6 +497,7 @@ case "$command_name" in
     nav) open_editor "$PROJECT_ROOT/mkdocs.yml" ;;
     protect) protect_doc "${1:-}" "${2:-}" ;;
     unprotect) unprotect_doc "${1:-}" ;;
+    reset-password) reset_group_password "${1:-}" ;;
     hash) "$(python_bin)" scripts/generate-password-hash.py ;;
     status) git_status ;;
     check) run_check ;;

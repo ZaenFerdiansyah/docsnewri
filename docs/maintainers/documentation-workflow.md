@@ -116,6 +116,7 @@ delete <path>                hapus dokumen dengan konfirmasi
 nav                          edit navigasi
 protect <path> <group>       lindungi dokumen
 unprotect <path>             jadikan dokumen publik
+reset-password <group>       reset password seluruh halaman dalam group
 hash                         buat hash password
 status                       lihat perubahan Git
 check                        validasi, unit test, dan strict build
@@ -223,10 +224,21 @@ Status disimpan di `sessionStorage`. Memuat ulang halaman mempertahankan status,
 
 ## Mengubah kata sandi
 
-1. Jalankan `python3 scripts/generate-password-hash.py`.
-2. Ganti hanya nilai `password_hash` pada entri yang sesuai.
-3. Jalankan validator dan pengujian.
-4. Commit dan push perubahan.
+Gunakan perintah berikut:
+
+```bash
+./scripts/docs.sh reset-password maintainers
+```
+
+Script akan menampilkan halaman yang termasuk dalam grup, meminta password baru
+dua kali, lalu mengganti hash seluruh halaman di grup tersebut. Plaintext
+password tidak ditampilkan dan tidak disimpan.
+
+Setelah reset berhasil, publish perubahan:
+
+```bash
+./scripts/docs.sh publish "security: reset password group maintainers"
+```
 
 Pengguna yang sudah membuka grup dalam sesi aktif mungkin perlu membuka tab atau sesi baru untuk menguji hash yang baru.
 

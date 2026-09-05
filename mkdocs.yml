@@ -68,11 +68,11 @@ nav:
   - Home: index.md
   - Network:
       - Overview: network/index.md
-      - SR-IOV dan TRex Jakarta-Denpasar 🔒: network/sriov-trex-jakarta-denpasar.md
   - DNS: dns/index.md
   - Server:
       - Overview: server/index.md
+      - SR-IOV dan TRex Jakarta-Denpasar : network/sriov-trex-jakarta-denpasar.md
   - Monitoring: monitoring/index.md
   - Maintainers:
-      - Documentation workflow 🔒: maintainers/documentation-workflow.md
-      - Security boundaries 🔒: maintainers/security.md
+      - Documentation workflow : maintainers/documentation-workflow.md
+      - Security boundaries : maintainers/security.md
