@@ -1,0 +1,110 @@
+/* Keep article content from flashing before secure-page classification. */
+html:not(.secure-pages-ready) .md-content__inner {
+  visibility: hidden;
+}
+
+html:not(.secure-pages-ready) .md-sidebar--secondary,
+html.secure-page-locked .md-sidebar--secondary {
+  visibility: hidden;
+}
+
+.secure-lock {
+  display: grid;
+  min-height: min(34rem, calc(100vh - 9rem));
+  place-items: center;
+  padding: 2rem 1rem;
+}
+
+.secure-lock__panel {
+  width: min(100%, 28rem);
+  padding: 2rem;
+  border: 0.05rem solid var(--md-default-fg-color--lightest);
+  border-radius: 0.4rem;
+  background: var(--md-default-bg-color);
+  box-shadow: var(--md-shadow-z2);
+  text-align: center;
+}
+
+.secure-lock__icon {
+  margin: 0;
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.secure-lock__title {
+  margin: 1rem 0 0.4rem;
+  font-size: 1.35rem;
+}
+
+.secure-lock__description {
+  margin: 0 0 1.5rem;
+  color: var(--md-default-fg-color--light);
+}
+
+.secure-lock__field {
+  display: block;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.secure-lock__label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-weight: 600;
+}
+
+.secure-lock__input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.7rem 0.8rem;
+  border: 0.05rem solid var(--md-default-fg-color--lighter);
+  border-radius: 0.2rem;
+  background: var(--md-code-bg-color);
+  color: var(--md-default-fg-color);
+  font: inherit;
+}
+
+.secure-lock__input:focus-visible,
+.secure-lock__button:focus-visible {
+  outline: 0.15rem solid var(--md-accent-fg-color);
+  outline-offset: 0.1rem;
+}
+
+.secure-lock__button {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: 0;
+  border-radius: 0.2rem;
+  background: var(--md-primary-fg-color);
+  color: var(--md-primary-bg-color);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+}
+
+.secure-lock__button:hover {
+  background: var(--md-accent-fg-color);
+}
+
+.secure-lock__button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.secure-lock__error {
+  min-height: 1.4em;
+  margin: 0.75rem 0 0;
+  color: var(--md-typeset-color);
+  font-weight: 600;
+}
+
+@media screen and (max-width: 44.984375em) {
+  .secure-lock {
+    min-height: calc(100vh - 6rem);
+    padding: 1rem 0;
+  }
+
+  .secure-lock__panel {
+    padding: 1.5rem;
+  }
+}

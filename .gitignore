@@ -1,0 +1,11 @@
+site/
+.venv/
+.pip-bootstrap/
+.python-packages/
+__pycache__/
+*.py[cod]
+.coverage
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+htmlcov/

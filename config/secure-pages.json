@@ -1,0 +1,14 @@
+{
+  "secure_pages": [
+    {
+      "path": "/network/vyos/",
+      "group": "vyos",
+      "password_hash": "c62eb5eb42791518a75e2213c61c1fec5caaa83db5ad0cd7875e58f08adcb99e"
+    },
+    {
+      "path": "/server/esxi/",
+      "group": "server-esxi",
+      "password_hash": "e8f8e5b40ec9b63731f2491568e2616a1f6443ba09bad46cf22fd70db5b38eaf"
+    }
+  ]
+}
