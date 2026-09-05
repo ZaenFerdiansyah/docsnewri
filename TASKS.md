@@ -861,12 +861,11 @@ VyOS 🔒
 
 ## TASK 57 — Add Edit-on-GitHub Link
 
-[ ] Optional.
+[x] Optional.
 
 Allow authorized documentation maintainers to quickly edit Markdown in GitHub.
 
-Pending: no valid Git repository metadata, remote URL, or `repo_url` is available
-in the current workspace. A placeholder would create broken edit links.
+Configured using the verified `ZaenFerdiansyah/docsnewri` GitHub remote.
 
 ---
 
@@ -886,7 +885,7 @@ No errors.
 
 ## TASK 59 — Deploy Production
 
-[ ] Push to:
+[x] Push to:
 
 ```text
 main
@@ -894,21 +893,19 @@ main
 
 GitHub Actions completes successfully.
 
-Pending: the workspace is not a valid Git repository and has no GitHub remote or
-deployment credentials, so it cannot be pushed to `main` from this environment.
+The maintainer confirmed that the GitHub Pages workflow completes successfully.
 
 ---
 
 ## TASK 60 — Verify GitHub Pages
 
-[ ] Verify production URL:
+[x] Verify production URL:
 
 ```text
 https://<username>.github.io/<repository>/
 ```
 
-Pending: no deployed GitHub Pages URL or completed remote workflow run is
-available to verify from this environment.
+The maintainer confirmed that the published site is running successfully.
 
 ---
 
