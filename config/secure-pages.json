@@ -19,6 +19,11 @@
       "path": "/maintainers/security/",
       "group": "maintainers",
       "password_hash": "a39628715e6ed45e683ff6e2ed5d66f4f56505900093e0b2406e639ba709236a"
+    },
+    {
+      "path": "/network/sriov-trex-jakarta-denpasar/",
+      "group": "sriov-trex-jakarta-denpasar",
+      "password_hash": "a39628715e6ed45e683ff6e2ed5d66f4f56505900093e0b2406e639ba709236a"
     }
   ]
 }
