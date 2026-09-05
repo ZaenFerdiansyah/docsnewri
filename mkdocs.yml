@@ -78,5 +78,5 @@ nav:
       - VMware ESXi 🔒: server/esxi.md
   - Monitoring: monitoring/index.md
   - Maintainers:
-      - Documentation workflow: maintainers/documentation-workflow.md
-      - Security boundaries: maintainers/security.md
+      - Documentation workflow 🔒: maintainers/documentation-workflow.md
+      - Security boundaries 🔒: maintainers/security.md
